@@ -26,10 +26,12 @@ testWidget::testWidget(QWidget *parent)
 	//线程返回值进行GUI上图片修改
 	//QObject::connect(myThread, SIGNAL(changeVideoPicture(QString)), this, SLOT(changeVideo(QString)));
 	//QObject::connect(myThread, SIGNAL(changeKmeansPicture(QString)), this, SLOT(changeKmeans(QString)));
-	timer = new QTimer(this);
-	timer->setInterval(40);
-	connect(timer, &QTimer::timeout, this, &testWidget::changePicture);
-	index = 0;
+	/*timer = new QTimer(this);
+	timer->setInterval(40);*/
+	myThread = new Thread(this);
+	QObject::connect(myThread, &Thread::done, this, &testWidget::changePicture);
+	
+	//index = 0;*/
 }
 
 testWidget::~testWidget()
@@ -74,7 +76,7 @@ void testWidget::sPlayVideo() {
 	
 	//myThread->start();
 	VideoCapture cap;
-	cap.open("E:/28-prp/vids/pos_005.avi");
+	cap.open("E:/28-prp/vids/pos_003.avi");
 	if (!cap.isOpened())
 	{
 		cout << "fail to open." << endl;
@@ -99,8 +101,12 @@ void testWidget::sPlayVideo() {
 		ui.Width->setText(newFrame.setNum(videowidth));
 		ui.Height->setText(newFrame.setNum(videoheight));
 		ui.FPS->setText(newFrame.setNum(fps));
-	}
-	timer->start();
+
+		cap.release();	
+
+		myThread->start();
+	}	
+	//timer->start();
 }
 
 /*void testWidget::changeVideo(QString vidPicPath) {
@@ -121,8 +127,26 @@ void testWidget::changeKmeans(QString kPicPath) {
 	ui.kmeansImage->show();
 }*/
 
-void testWidget::changePicture() {	
-	index++;
+double getangle(double x, double y)
+{
+	double angle;
+	if (x*x + y*y<0.2) { angle = 0; }
+	else if (fabs(x)<0.0001)
+	{
+		if (y>0) angle = M_PI_2;
+		else angle = 3 * M_PI_2;
+	}
+	else if (x>0 && y > 0)
+	{
+		angle = atan(y / x);
+	}
+	else if (x<0) { angle = M_PI + atan(y / x); }
+	else if (x>0 && y<0) { angle = 2 * M_PI + atan(y / x); }
+	return angle;
+}
+
+void testWidget::changePicture(QString index) {	
+	/*index++;
 	
 	QString newFrame;
 	
@@ -146,5 +170,26 @@ void testWidget::changePicture() {
 
 	pix = pix.scaled(161, 161, Qt::KeepAspectRatio);
 	ui.kmeansImage->setPixmap(pix);
+	ui.kmeansImage->show();*/
+	QString addressKmeans("D://pictures/pic_of");
+	addressKmeans.append(index).append("_lightflow.jpg");
+
+
+	ui.frameNumber->setText(index);
+	QString addressVideo("D://pictures/pic_of");
+	addressVideo.append(index).append("_original.jpg");
+
+	QPixmap pix;
+	pix.load(addressVideo);
+
+	pix = pix.scaled(641, 361, Qt::KeepAspectRatio);
+	ui.playVideo->setPixmap(pix);
+	ui.playVideo->show();
+
+	pix.load(addressKmeans);
+
+	pix = pix.scaled(161, 161, Qt::KeepAspectRatio);
+	ui.kmeansImage->setPixmap(pix);
 	ui.kmeansImage->show();
+
 }

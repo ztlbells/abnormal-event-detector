@@ -4,7 +4,7 @@
 #include "ui_testwidget.h"
 #include <QImage>  
 #include <QPixmap> 
-//#include "videoThread.h"
+#include "Thread.h"
 class testWidget : public QWidget
 {
 	Q_OBJECT
@@ -13,9 +13,10 @@ public:
 	testWidget(QWidget *parent = 0);
 	~testWidget();
 	//播放视频线程
-	//videoThread *myThread;
-	int index;
-	QTimer *timer;
+	Thread *myThread;
+	//int index;
+	//QTimer *timer;
+	
 	
 
 public slots:
@@ -23,7 +24,7 @@ public slots:
 	void sPlayVideo();
 	//void changeVideo(QString);
 	//void changeKmeans(QString);
-	void changePicture();
+	void changePicture(QString index);
 	
 private:
 	Ui::testWidgetClass ui;
