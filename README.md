@@ -23,6 +23,6 @@ Directories to include：
 
 *Thread.cpp*:processing each frame in video.
 
-*GUI*: The area with abnormal optical flows will be marked in red; the direction distribution of pixes optical flows will be displayed in the polar coordinate system (in the lower right corner).
+*GUI*: The area with abnormal optical flows will be marked in red; the distribution of pixels optical flows directions will be displayed in the polar coordinate system (in the lower right corner).
 
 *Output*: data for training (in txt).
